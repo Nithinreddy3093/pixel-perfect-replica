@@ -48,13 +48,13 @@
   --secondary-foreground: oklch(0.18 0.01 60);
   --muted: oklch(0.92 0.008 80);
   --muted-foreground: oklch(0.48 0.012 60);
-  --accent: oklch(0.66 0.18 35);
+  --accent: oklch(0.52 0.22 268);
   --accent-foreground: oklch(0.99 0.004 80);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(0.88 0.008 80);
   --input: oklch(0.88 0.008 80);
-  --ring: oklch(0.66 0.18 35);
+  --ring: oklch(0.52 0.22 268);
   --shadow-lift: 0 18px 40px -20px color-mix(in oklab, var(--foreground) 35%, transparent);
 }
 
@@ -71,11 +71,11 @@
   --secondary-foreground: oklch(0.95 0.006 80);
   --muted: oklch(0.25 0.008 60);
   --muted-foreground: oklch(0.68 0.01 70);
-  --accent: oklch(0.7 0.17 38);
+  --accent: oklch(0.66 0.19 268);
   --accent-foreground: oklch(0.17 0.008 60);
   --border: oklch(0.3 0.008 60);
   --input: oklch(0.3 0.008 60);
-  --ring: oklch(0.7 0.17 38);
+  --ring: oklch(0.66 0.19 268);
   --shadow-lift: 0 18px 40px -20px oklch(0 0 0 / 70%);
 }
 
