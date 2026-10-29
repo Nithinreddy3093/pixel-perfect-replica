@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import Lenis from "lenis";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { profile, sections } from "@/data/portfolio";
-import { About, Achievements, Contact, Experience, Footer, Hero, Projects, Skills, Testimonials } from "@/components/portfolio/Sections";
+import { About, Achievements, Contact, Experience, Footer, Hero, Projects, Research, Skills } from "@/components/portfolio/Sections";
 import heroStill from "@/assets/models/hero-still.png.asset.json";
 
 const Scene = lazy(() => import("@/components/portfolio/Scene"));
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: `${profile.name} — ${profile.field} Portfolio` },
+      { title: `${profile.name} | ${profile.field}` },
       { name: "description", content: profile.tagline },
       { property: "og:title", content: `${profile.name} — Portfolio` },
       { property: "og:description", content: profile.tagline },
@@ -145,9 +145,9 @@ function Portfolio() {
         <About />
         <Skills />
         <Projects />
+        <Research />
         <Experience />
         <Achievements />
-        <Testimonials />
         <Contact />
       </main>
       <div className="relative z-10"><Footer top={() => go("hero")} /></div>

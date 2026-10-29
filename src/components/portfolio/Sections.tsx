@@ -1,6 +1,6 @@
 import { AnimatePresence, animate, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { awards, counters, profile, projects, skills, testimonials, timeline, type Project } from "@/data/portfolio";
+import { awards, certifications, counters, profile, projects, research, skills, timeline, type Project, type ProjectCategory } from "@/data/portfolio";
 
 const reveal = {
   initial: { opacity: 0, y: 32 },
@@ -118,8 +118,12 @@ function ProjectCard({ p, i, open }: { p: Project; i: number; open: () => void }
   );
 }
 
+const FILTERS: ("All" | ProjectCategory)[] = ["All", "Security", "Full-Stack", "AI"];
+
 export function Projects() {
   const [active, setActive] = useState<Project | null>(null);
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
+  const shown = filter === "All" ? projects : projects.filter((p) => p.category === filter);
   useEffect(() => {
     const k = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
     window.addEventListener("keydown", k);
@@ -129,8 +133,16 @@ export function Projects() {
     <section id="projects" className="py-32">
       <div className="container-x">
         <SectionHead n="03" eyebrow="Selected work" title={<>Things I've <span className="text-accent">built.</span></>} />
+        <motion.div {...reveal} className="mb-12 flex flex-wrap gap-2" role="group" aria-label="Filter projects">
+          {FILTERS.map((f) => (
+            <button key={f} onClick={() => setFilter(f)} aria-pressed={filter === f}
+              className={`rounded-full border px-5 py-2 text-sm font-medium transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "hover:border-accent hover:text-accent"}`}>
+              {f}
+            </button>
+          ))}
+        </motion.div>
         <div className="grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p, i) => <ProjectCard key={p.title} p={p} i={i} open={() => setActive(p)} />)}
+          {shown.map((p, i) => <ProjectCard key={p.title} p={p} i={i} open={() => setActive(p)} />)}
         </div>
       </div>
       <AnimatePresence>
@@ -163,6 +175,25 @@ export function Projects() {
   );
 }
 
+export function Research() {
+  return (
+    <section id="research" className="py-32">
+      <div className="container-x">
+        <SectionHead n="04" eyebrow="Research" title="Published work." />
+        <motion.div {...reveal} className="rounded-3xl border bg-card/80 p-8 backdrop-blur-sm md:p-12 lg:w-3/4">
+          <p className="eyebrow"><span className="text-accent">{research.venue}</span> · {research.docNo}</p>
+          <h3 className="mt-4 font-display text-3xl font-bold md:text-4xl">{research.title}</h3>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">{research.text}</p>
+          <a href={research.link} target="_blank" rel="noreferrer"
+            className="mt-8 inline-block rounded-full bg-primary px-7 py-3.5 font-medium text-primary-foreground transition-transform hover:-translate-y-0.5">
+            Read Paper ↗
+          </a>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function TimelineItem({ t }: { t: (typeof timeline)[number] }) {
   const ref = useRef<HTMLLIElement>(null);
   const inView = useInView(ref, { margin: "-45% 0px -45% 0px" });
@@ -180,7 +211,7 @@ export function Experience() {
   return (
     <section id="experience" className="py-32">
       <div className="container-x">
-        <SectionHead n="04" eyebrow="Experience & education" title="The journey so far." />
+        <SectionHead n="05" eyebrow="Experience & education" title="The journey so far." />
         <ol className="ml-2 border-l border-foreground/15 md:w-2/3">
           {timeline.map((t) => <TimelineItem key={t.title} t={t} />)}
         </ol>
@@ -204,50 +235,30 @@ export function Achievements() {
   return (
     <section id="achievements" className="py-32">
       <div className="container-x">
-        <SectionHead n="05" eyebrow="Achievements" title="By the numbers." />
+        <SectionHead n="06" eyebrow="Achievements" title="By the numbers." />
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {counters.map((c) => (
             <motion.div key={c.label} {...reveal} className="border-t pt-6">
-              <p className="font-display text-6xl font-bold md:text-7xl"><Counter value={c.value} /><span className="text-accent">+</span></p>
+              <p className="font-display text-6xl font-bold md:text-7xl"><Counter value={c.value} /><span className="text-accent">{c.suffix}</span></p>
               <p className="mt-2 text-muted-foreground">{c.label}</p>
             </motion.div>
           ))}
         </div>
-        <div className="mt-20 grid gap-4 md:grid-cols-2">
+        <div className="mt-20 grid gap-4 md:grid-cols-3">
           {awards.map((a, i) => (
             <motion.div key={a.title} {...reveal} transition={{ ...reveal.transition, delay: i * 0.06 }}
               className="flex items-center justify-between rounded-2xl border bg-card/80 p-6 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lift">
               <div><h3 className="text-lg font-semibold">{a.title}</h3><p className="text-sm text-muted-foreground">{a.org}</p></div>
-              <span className="font-display text-sm text-accent">{a.year}</span>
+              {a.year && <span className="font-display text-sm text-accent">{a.year}</span>}
             </motion.div>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-export function Testimonials() {
-  const [i, setI] = useState(0);
-  const t = testimonials[i]!;
-  return (
-    <section id="testimonials" className="py-32">
-      <div className="container-x md:w-3/4">
-        <p className="eyebrow">Kind words</p>
-        <div className="relative mt-8 min-h-[14rem]">
-          <AnimatePresence mode="wait">
-            <motion.figure key={i} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.5 }}>
-              <blockquote className="font-display text-3xl font-medium leading-snug md:text-4xl">“{t.quote}”</blockquote>
-              <figcaption className="mt-6 text-muted-foreground"><span className="font-medium text-foreground">{t.name}</span> — {t.role}</figcaption>
-            </motion.figure>
-          </AnimatePresence>
-        </div>
-        <div className="mt-8 flex items-center gap-3">
-          {testimonials.map((_, n) => (
-            <button key={n} onClick={() => setI(n)} aria-label={`Show testimonial ${n + 1}`}
-              className={`h-2 rounded-full transition-all ${n === i ? "w-10 bg-accent" : "w-2 bg-foreground/25"}`} />
-          ))}
-        </div>
+        <motion.div {...reveal} className="mt-20">
+          <p className="eyebrow">Certifications</p>
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {certifications.map((c) => <li key={c} className="rounded-full border px-4 py-2 text-sm">{c}</li>)}
+          </ul>
+        </motion.div>
       </div>
     </section>
   );
@@ -271,8 +282,8 @@ export function Contact() {
     <section id="contact" className="py-32">
       <div className="container-x grid gap-16 md:grid-cols-2">
         <div>
-          <p className="eyebrow"><span className="text-accent">06</span> — Contact</p>
-          <motion.h2 {...reveal} className="mt-4 text-6xl font-bold leading-[0.95] md:text-8xl">Let's work together<span className="text-accent">.</span></motion.h2>
+          <p className="eyebrow"><span className="text-accent">07</span> — Contact</p>
+          <motion.h2 {...reveal} className="mt-4 text-6xl font-bold leading-[0.95] md:text-8xl">Let's build something secure<span className="text-accent">.</span></motion.h2>
           <a href={`mailto:${profile.email}`} className="mt-10 inline-block text-xl underline decoration-accent underline-offset-8 hover:text-accent">{profile.email}</a>
           <ul className="mt-8 flex flex-wrap gap-3">
             {profile.socials.map((s) => (
