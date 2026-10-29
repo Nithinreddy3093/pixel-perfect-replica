@@ -1,5 +1,6 @@
 import { AnimatePresence, animate, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import portrait from "@/assets/nithin.jpg.asset.json";
 import { awards, certifications, counters, profile, projects, research, skills, timeline, type Project, type ProjectCategory } from "@/data/portfolio";
 
 const reveal = {
@@ -36,7 +37,7 @@ export function Hero({ go }: { go: (id: string) => void }) {
         </motion.p>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="mt-10 flex flex-wrap gap-3">
           <button onClick={() => go("projects")} className="rounded-full bg-primary px-7 py-3.5 font-medium text-primary-foreground transition-transform hover:-translate-y-0.5">View Work</button>
-          <a href={profile.cvUrl} download className="rounded-full border border-foreground/20 px-7 py-3.5 font-medium transition-colors hover:border-accent hover:text-accent">Download CV</a>
+          <a href={profile.cvUrl} target="_blank" rel="noreferrer" className="rounded-full border border-foreground/20 px-7 py-3.5 font-medium transition-colors hover:border-accent hover:text-accent">Download CV</a>
         </motion.div>
       </div>
       <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2" aria-hidden>
@@ -64,9 +65,7 @@ export function About() {
           </motion.dl>
         </div>
         <motion.div {...reveal} className="md:col-span-4 md:col-start-1 md:row-start-1 md:mt-40">
-          <div role="img" aria-label={`Portrait placeholder for ${profile.name}`} className="flex aspect-[4/5] items-end rounded-2xl bg-secondary p-5">
-            <span className="eyebrow">Portrait — replace me</span>
-          </div>
+          <img src={portrait.url} alt={`Portrait of ${profile.name}`} width={400} height={500} loading="lazy" className="aspect-[4/5] w-full rounded-2xl object-cover" />
         </motion.div>
       </div>
     </section>
@@ -100,7 +99,7 @@ function ProjectCard({ p, i, open }: { p: Project; i: number; open: () => void }
       <button onClick={open} className="block w-full text-left" aria-label={`Open ${p.title} details`}>
         <div className="overflow-hidden rounded-2xl transition-transform duration-500 group-hover:[transform:perspective(900px)_rotateX(2deg)_rotateY(-3deg)]">
           <div className="flex aspect-[4/3] items-end p-5 transition-transform duration-700 group-hover:scale-105"
-            style={{ background: `oklch(0.86 0.06 ${p.hue})` }}>
+            style={{ background: p.image ? `center/cover no-repeat url(${p.image})` : `oklch(0.86 0.06 ${p.hue})` }}>
             <span className="font-display text-6xl font-bold opacity-20" style={{ color: `oklch(0.3 0.05 ${p.hue})` }}>0{i + 1}</span>
           </div>
         </div>
@@ -275,7 +274,11 @@ export function Contact() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) n.email = "Please enter a valid email.";
     if (v.message.trim().length < 10) n.message = "A few more words, please (10+ characters).";
     setErr(n);
-    if (!Object.keys(n).length) setSent(true);
+    if (!Object.keys(n).length) {
+      const text = `Hi Nithin, I'm ${v.name.trim()} (${v.email.trim()}).\n\n${v.message.trim()}`;
+      window.open(`https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+      setSent(true);
+    }
   };
   const field = "w-full border-b border-foreground/25 bg-transparent py-3 text-lg outline-none transition-colors focus:border-accent";
   return (
@@ -296,7 +299,7 @@ export function Contact() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex h-full flex-col justify-center py-12" role="status">
               <span className="text-4xl text-accent">✓</span>
               <h3 className="mt-4 text-3xl font-bold">Thanks, {v.name.split(" ")[0]}!</h3>
-              <p className="mt-2 text-muted-foreground">Your message is on its way. I'll reply within a couple of days.</p>
+              <p className="mt-2 text-muted-foreground">WhatsApp opened with your message — just tap send there.</p>
             </motion.div>
           ) : (
             <form onSubmit={submit} noValidate className="space-y-8">
@@ -311,7 +314,7 @@ export function Contact() {
                   {err[k] && <p className="mt-2 text-sm text-destructive">{err[k]}</p>}
                 </div>
               ))}
-              <button type="submit" className="w-full rounded-full bg-primary py-4 font-medium text-primary-foreground transition-transform hover:-translate-y-0.5">Send message</button>
+              <button type="submit" className="w-full rounded-full bg-primary py-4 font-medium text-primary-foreground transition-transform hover:-translate-y-0.5">Send on WhatsApp</button>
             </form>
           )}
         </div>
