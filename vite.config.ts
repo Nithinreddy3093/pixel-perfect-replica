@@ -12,4 +12,18 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    plugins: [
+      {
+        // The devtools plugin injects `data-tsd-source` on every JSX element; React Three Fiber
+        // treats dashed props as nested paths and crashes. Strip it from 3D scene files.
+        name: "strip-tsd-source-r3f",
+        enforce: "post",
+        transform(code: string, id: string) {
+          if (!/src\/components\/portfolio\/Scene\.tsx/.test(id) || !code.includes("data-tsd-source")) return null;
+          return { code: code.replace(/["']data-tsd-source["']\s*:\s*["'][^"']*["']\s*,?/g, ""), map: null };
+        },
+      },
+    ],
+  },
 });
