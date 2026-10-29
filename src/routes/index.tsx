@@ -109,7 +109,7 @@ function Portfolio() {
         {!(lite || mobile || reduced) ? (
           <Suspense fallback={null}><Scene reduced={reduced} dark={dark} onReady={() => setLoaded(true)} /></Suspense>
         ) : (
-          <img src={heroStill.url} alt="" className="absolute right-[4%] top-1/2 w-[min(80vw,34rem)] -translate-y-1/2 object-contain opacity-90" />
+          <img src={heroStill.url} alt="" className="absolute -right-[8%] top-[9%] w-[55vw] object-contain opacity-90 md:right-[4%] md:top-1/2 md:w-[min(80vw,34rem)] md:-translate-y-1/2" />
         )}
       </div>
 
