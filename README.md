@@ -1,24 +1,18 @@
-# Pixel Perfect Replica
+# Nithin Reddy — Portfolio
 
-Implement exactly the screenshot and nothing else
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a98a568b-1d3c-4e51-908b-f11fa2c9db81).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+Interactive portfolio built with React, TanStack Start, Three.js, and Tailwind CSS.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Install dependencies with Node.js and npm:
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Create a production build with `npm run build`.
+
+## Deploy
+
+Authenticate with Cloudflare using `npx wrangler login`, then run `npm run deploy`.

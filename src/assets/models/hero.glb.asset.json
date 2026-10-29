@@ -1,11 +1,7 @@
 {
   "version": 1,
-  "asset_id": "bd115fd8-5363-4dc7-beaf-bc2a44876abc",
-  "project_id": "a98a568b-1d3c-4e51-908b-f11fa2c9db81",
-  "url": "/__l5e/assets-v1/bd115fd8-5363-4dc7-beaf-bc2a44876abc/hero.glb",
-  "r2_key": "a/v1/a98a568b-1d3c-4e51-908b-f11fa2c9db81/bd115fd8-5363-4dc7-beaf-bc2a44876abc/hero.glb",
-  "original_filename": "hero.glb",
-  "size": 367560,
-  "content_type": "model/gltf-binary",
-  "created_at": "2026-10-29T06:21:43Z"
+  "url": "/models/hero.glb",
+  "original_filename": "BpkBX0hymyktUDOJ2MYG.glb",
+  "size": 3224672,
+  "content_type": "model/gltf-binary"
 }

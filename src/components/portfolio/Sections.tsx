@@ -1,6 +1,5 @@
 import { AnimatePresence, animate, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import portrait from "@/assets/nithin.jpg.asset.json";
 import { awards, certifications, counters, profile, projects, research, skills, timeline, type Project, type ProjectCategory } from "@/data/portfolio";
 
 const reveal = {
@@ -65,7 +64,7 @@ export function About() {
           </motion.dl>
         </div>
         <motion.div {...reveal} className="md:col-span-4 md:col-start-1 md:row-start-1 md:mt-40">
-          <img src={portrait.url} alt={`Portrait of ${profile.name}`} width={400} height={500} loading="lazy" className="aspect-[4/5] w-full rounded-2xl object-cover" />
+          <img src="/images/nithin-me.jpg" alt={`Portrait of ${profile.name}`} width={400} height={500} loading="lazy" className="aspect-[4/5] w-full rounded-2xl object-cover" />
         </motion.div>
       </div>
     </section>
