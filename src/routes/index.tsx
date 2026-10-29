@@ -42,8 +42,10 @@ function Portfolio() {
     const cores = navigator.hardwareConcurrency ?? 8;
     const noGL = !document.createElement("canvas").getContext("webgl2");
     const isLite = noGL || cores <= 2;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
     setLite(isLite);
-    if (isLite) setLoaded(true);
+    setMobile(isMobile);
+    if (isLite || isMobile || r) setLoaded(true);
     setDark(localStorage.getItem("theme") === "dark");
     if (!r) {
       const l = new Lenis({ lerp: 0.09 });
@@ -104,10 +106,10 @@ function Portfolio() {
       <div ref={cursor} aria-hidden className="pointer-events-none fixed left-0 top-0 z-[80] hidden h-5 w-5 rounded-full border border-accent [@media(pointer:fine)]:block" />
 
       <div className="pointer-events-none fixed inset-0 z-0" data-scene-ready={loaded || undefined} aria-hidden>
-        {!lite ? (
+        {!(lite || mobile || reduced) ? (
           <Suspense fallback={null}><Scene reduced={reduced} dark={dark} onReady={() => setLoaded(true)} /></Suspense>
         ) : (
-          <div className="absolute right-[10%] top-1/3 h-48 w-48 rounded-[2rem] bg-secondary" />
+          <img src={heroStill.url} alt="" className="absolute right-[4%] top-1/2 w-[min(80vw,34rem)] -translate-y-1/2 object-contain opacity-90" />
         )}
       </div>
 
