@@ -4,6 +4,7 @@ import Lenis from "lenis";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { profile, sections } from "@/data/portfolio";
 import { About, Achievements, Contact, Experience, Footer, Hero, Projects, Skills, Testimonials } from "@/components/portfolio/Sections";
+import heroStill from "@/assets/models/hero-still.png.asset.json";
 
 const Scene = lazy(() => import("@/components/portfolio/Scene"));
 
@@ -26,6 +27,7 @@ function Portfolio() {
   const [dark, setDark] = useState(false);
   const [reduced, setReduced] = useState(false);
   const [lite, setLite] = useState(false);
+  const [mobile, setMobile] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [active, setActive] = useState("hero");
   const [menu, setMenu] = useState(false);
