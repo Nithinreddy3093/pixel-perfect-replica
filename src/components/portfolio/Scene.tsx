@@ -1,7 +1,10 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import heroModel from "@/assets/models/hero.glb.asset.json";
+
+useGLTF.preload(heroModel.url);
 
 // Keyframes per scroll progress: [x, y, z, rotY, scale]
 const KEYS: [number, number, number, number, number][] = [
@@ -23,11 +26,34 @@ function sample(p: number) {
   return a.map((v, k) => v + (b[k]! - v) * e) as [number, number, number, number, number];
 }
 
-function Sculpture({ reduced, onReady, accent, clay }: { reduced: boolean; onReady: () => void; accent: string; clay: string }) {
+function HeroModel({ reduced, onReady }: { reduced: boolean; onReady: () => void }) {
+  const { scene } = useGLTF(heroModel.url);
   const group = useRef<THREE.Group>(null);
-  const ring = useRef<THREE.Mesh>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const ready = useRef(false);
+
+  // Clone the cached scene, auto-center it, scale it to fit, and force matte materials.
+  const model = useMemo(() => {
+    const clone = scene.clone(true);
+    const box = new THREE.Box3().setFromObject(clone);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const s = 2.6 / maxDim;
+    clone.scale.setScalar(s);
+    clone.position.sub(center.multiplyScalar(s));
+    clone.traverse((o) => {
+      if (o instanceof THREE.Mesh) {
+        const m = o.material as THREE.MeshStandardMaterial | undefined;
+        if (m && "roughness" in m) {
+          m.roughness = 0.92;
+          m.metalness = 0.04;
+          m.needsUpdate = true;
+        }
+      }
+    });
+    return clone;
+  }, [scene]);
 
   useEffect(() => {
     const m = (e: PointerEvent) => {
@@ -56,27 +82,12 @@ function Sculpture({ reduced, onReady, accent, clay }: { reduced: boolean; onRea
     const idle = reduced ? 0 : state.clock.elapsedTime * 0.08;
     g.rotation.y += (ry + idle + mouse.current.x * 0.25 - g.rotation.y) * k;
     g.rotation.x += (mouse.current.y * 0.15 - g.rotation.x) * k;
-    if (ring.current && !reduced) ring.current.rotation.z += dt * 0.2;
     if (!ready.current) { ready.current = true; onReady(); }
   });
 
   return (
     <group ref={group}>
-      <RoundedBox args={[1.4, 1.4, 1.4]} radius={0.18} smoothness={4} rotation={[0.5, 0.6, 0]}>
-        <meshStandardMaterial color={clay} roughness={0.95} metalness={0} />
-      </RoundedBox>
-      <mesh position={[0.95, 0.85, 0.4]}>
-        <sphereGeometry args={[0.42, 48, 48]} />
-        <meshStandardMaterial color={accent} roughness={0.9} />
-      </mesh>
-      <mesh ref={ring} position={[-0.6, -0.9, 0.3]} rotation={[1.1, 0, 0]}>
-        <torusGeometry args={[0.55, 0.16, 24, 64]} />
-        <meshStandardMaterial color={clay} roughness={0.95} />
-      </mesh>
-      <mesh position={[-1.05, 0.7, -0.3]} rotation={[0.3, 0.4, 0.2]}>
-        <coneGeometry args={[0.32, 0.65, 4]} />
-        <meshStandardMaterial color="#2a2724" roughness={0.9} flatShading />
-      </mesh>
+      <primitive object={model} />
     </group>
   );
 }
@@ -84,10 +95,11 @@ function Sculpture({ reduced, onReady, accent, clay }: { reduced: boolean; onRea
 export default function Scene({ reduced, dark, onReady }: { reduced: boolean; dark: boolean; onReady: () => void }) {
   return (
     <Canvas dpr={[1, 1.75]} camera={{ position: [0, 0, 6], fov: 40 }} gl={{ antialias: true, alpha: true }}>
-      <ambientLight intensity={dark ? 0.9 : 1.1} />
-      <hemisphereLight args={["#fff8ee", "#c9c2b8", 0.6]} />
-      <directionalLight position={[3, 4, 5]} intensity={1.3} />
-      <Sculpture reduced={reduced} onReady={onReady} accent="#e8643c" clay={dark ? "#d9d2c7" : "#ece6dc"} />
+      <ambientLight intensity={dark ? 1 : 1.2} />
+      <directionalLight position={[3, 4, 5]} intensity={1.1} />
+      <Suspense fallback={null}>
+        <HeroModel reduced={reduced} onReady={onReady} />
+      </Suspense>
     </Canvas>
   );
 }
