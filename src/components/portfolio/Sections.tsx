@@ -229,7 +229,7 @@ export function Achievements() {
 
 export function Testimonials() {
   const [i, setI] = useState(0);
-  const t = testimonials[i];
+  const t = testimonials[i]!;
   return (
     <section id="testimonials" className="py-32">
       <div className="container-x md:w-3/4">
@@ -255,11 +255,11 @@ export function Testimonials() {
 
 export function Contact() {
   const [v, setV] = useState({ name: "", email: "", message: "" });
-  const [err, setErr] = useState<Record<string, string>>({});
+  const [err, setErr] = useState<{ name?: string; email?: string; message?: string }>({});
   const [sent, setSent] = useState(false);
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const n: Record<string, string> = {};
+    const n: { name?: string; email?: string; message?: string } = {};
     if (!v.name.trim()) n.name = "Please enter your name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) n.email = "Please enter a valid email.";
     if (v.message.trim().length < 10) n.message = "A few more words, please (10+ characters).";

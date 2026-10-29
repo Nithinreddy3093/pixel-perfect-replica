@@ -51,6 +51,7 @@ function Portfolio() {
       id = requestAnimationFrame(raf);
       return () => { cancelAnimationFrame(id); l.destroy(); };
     }
+    return undefined;
   }, []);
 
   useEffect(() => {

@@ -19,7 +19,8 @@ function sample(p: number) {
   const i = Math.min(Math.floor(f), KEYS.length - 2);
   const t = f - i;
   const e = t * t * (3 - 2 * t);
-  return KEYS[i].map((v, k) => v + (KEYS[i + 1][k] - v) * e);
+  const a = KEYS[i]!, b = KEYS[i + 1]!;
+  return a.map((v, k) => v + (b[k]! - v) * e) as [number, number, number, number, number];
 }
 
 function Sculpture({ reduced, onReady, accent, clay }: { reduced: boolean; onReady: () => void; accent: string; clay: string }) {
